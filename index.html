@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -85,6 +84,9 @@
             --font-display: 'El Messiri', sans-serif;
             --font-body: 'Almarai', sans-serif;
             --font-mono: 'Almarai', monospace;
+            /* Navbar glass */
+            --navbar-bg: rgba(250, 249, 252, 0.78);
+            --navbar-blur: 16px;
         }
 
         [data-theme="dark"] {
@@ -100,7 +102,10 @@
             --text-faint: #766E8A;
             --accent-soft: rgba(139, 92, 246, 0.16);
             --accent-2-soft: rgba(139, 92, 246, 0.18);
+            --navbar-bg: rgba(18, 14, 23, 0.78);
         }
+
+        /* Dark mode text color adjustments */
         [data-theme="dark"] .hero-name,
         [data-theme="dark"] .about-text h3,
         [data-theme="dark"] .service-card h4,
@@ -118,9 +123,50 @@
         [data-theme="dark"] .editor-body {
             color: var(--text);
         }
+
         [data-theme="dark"] .editor-code .str { color: #34D399; }
         [data-theme="dark"] body {
             color-scheme: dark;
+        }
+
+        /* ⸻ Dark mode hover fixes ⸻ */
+        [data-theme="dark"] .service-card:hover {
+            background: #2A2233;
+            border-color: var(--accent);
+        }
+        [data-theme="dark"] .project-card:hover,
+        [data-theme="dark"] .process-card:hover,
+        [data-theme="dark"] .testimonial-card:hover,
+        [data-theme="dark"] .compare-card:hover {
+            background: #241E2B;
+            border-color: var(--accent);
+        }
+        [data-theme="dark"] .trait-pill:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--accent);
+        }
+        [data-theme="dark"] .counter-item {
+            background: var(--surface);
+        }
+
+        /* ⸻ Icon size increase ⸻ */
+        .service-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            font-size: 1.25rem;
+        }
+        .process-card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+        }
+        .compare-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            font-size: 1.5rem;
         }
 
         * {
@@ -296,7 +342,7 @@
             top: 16px;
         }
 
-        /* ── Navbar ───────────────────────── */
+        /* ── Navbar (Glass effect) ──────────────── */
         .navbar {
             position: fixed;
             top: 0;
@@ -304,14 +350,17 @@
             z-index: 999;
             padding: 16px 0;
             transition: var(--transition-fast);
+            background: var(--navbar-bg);
+            backdrop-filter: blur(var(--navbar-blur));
+            -webkit-backdrop-filter: blur(var(--navbar-blur));
+            border-bottom: 1px solid var(--line);
         }
         .navbar.scrolled {
             padding: 11px 0;
-            background: rgba(250, 249, 252, 0.82);
-            backdrop-filter: blur(14px) saturate(160%);
-            -webkit-backdrop-filter: blur(14px) saturate(160%);
-            border-bottom: 1px solid var(--line);
-            box-shadow: 0 8px 28px rgba(124, 58, 237, 0.06);
+            background: var(--navbar-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 8px 28px rgba(124, 58, 237, 0.08);
         }
         .navbar-inner {
             display: flex;
@@ -1163,15 +1212,12 @@
             color: var(--text-faint);
         }
         .service-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 12px;
+            /* width, height, border-radius, font-size handled globally */
             background: var(--accent-soft);
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 16px;
-            font-size: 1.15rem;
             color: var(--accent);
             transition: var(--transition);
         }
@@ -1481,15 +1527,11 @@
             border-radius: 999px;
         }
         .process-card-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
+            background: var(--accent-soft);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--accent-soft);
             color: var(--accent);
-            font-size: 1.1rem;
         }
         .process-card h4 {
             font-size: 1.05rem;
@@ -1716,14 +1758,11 @@
             margin-bottom: 18px;
         }
         .compare-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 16px;
+            /* width, height, border-radius, font-size handled globally */
             background: var(--accent-soft);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
             color: var(--accent);
         }
         .compare-badge {
@@ -2800,19 +2839,17 @@
                 const saved = localStorage.getItem('ah-theme');
                 const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                 applyTheme(saved || (systemDark ? 'dark' : 'light'));
-            } catch (err) {
-                /* localStorage unavailable — default light theme stands */
-            }
+            } catch (err) {}
             if (themeToggle) {
                 themeToggle.addEventListener('click', () => {
                     const isDark = root.getAttribute('data-theme') === 'dark';
                     const next = isDark ? 'light' : 'dark';
                     applyTheme(next);
-                    try { localStorage.setItem('ah-theme', next); } catch (err) { /* ignore */ }
+                    try { localStorage.setItem('ah-theme', next); } catch (err) {}
                 });
             }
 
-            // ── Navbar: scroll shadow + mobile panel ──
+            // ── Navbar: scroll effect & mobile panel ──
             const navbar = document.getElementById('navbar');
             const navToggle = document.getElementById('navToggle');
             const navPanel = document.getElementById('navMobilePanel');
@@ -2838,11 +2875,9 @@
                 });
             }
 
-            // ── Scrollspy: highlight active section link ──
+            // ── Scrollspy ──
             const navAnchors = document.querySelectorAll('.nav-links a, .nav-mobile-panel a');
-            const spySections = Array.from(navAnchors)
-                .map(a => document.querySelector(a.getAttribute('href')))
-                .filter(Boolean);
+            const spySections = Array.from(navAnchors).map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
             if ('IntersectionObserver' in window && spySections.length) {
                 const spyObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
@@ -2855,126 +2890,68 @@
                 spySections.forEach(sec => spyObserver.observe(sec));
             }
 
-            // ── Back to top ───────────────────
+            // ── Back to top ──
             const backToTop = document.getElementById('backToTop');
             if (backToTop) {
-                window.addEventListener('scroll', () => {
-                    backToTop.classList.toggle('visible', window.scrollY > 480);
-                }, { passive: true });
-                backToTop.addEventListener('click', () => {
-                    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-                });
+                window.addEventListener('scroll', () => backToTop.classList.toggle('visible', window.scrollY > 480), { passive: true });
+                backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' }));
             }
 
-            // ── Typing effect ─────────────────
+            // ── Typing effect ──
             const typingEl = document.getElementById('typingText');
-            const words = ['WordPress Developer', 'MERN Stack Developer', 'React Developer', 'Node.js Developer',
-                'Performance Optimizer', 'SEO Friendly Developer', 'Problem Solver'
-            ];
-            let wordIndex = 0,
-                charIndex = 0,
-                isDeleting = false;
-            const typeSpeed = 75,
-                pauseAfterWord = 1800;
-
+            const words = ['WordPress Developer', 'MERN Stack Developer', 'React Developer', 'Node.js Developer', 'Performance Optimizer', 'SEO Friendly Developer', 'Problem Solver'];
+            let wordIndex = 0, charIndex = 0, isDeleting = false;
             function type() {
                 if (!typingEl) return;
                 const currentWord = words[wordIndex];
                 if (!isDeleting) {
                     typingEl.textContent = currentWord.substring(0, charIndex + 1);
                     charIndex++;
-                    if (charIndex === currentWord.length) {
-                        isDeleting = true;
-                        setTimeout(type, pauseAfterWord);
-                        return;
-                    }
-                    setTimeout(type, typeSpeed + Math.random() * 40);
+                    if (charIndex === currentWord.length) { isDeleting = true; setTimeout(type, 1800); return; }
+                    setTimeout(type, 75 + Math.random() * 40);
                 } else {
                     typingEl.textContent = currentWord.substring(0, charIndex - 1);
                     charIndex--;
-                    if (charIndex === 0) {
-                        isDeleting = false;
-                        wordIndex = (wordIndex + 1) % words.length;
-                        setTimeout(type, 300);
-                        return;
-                    }
+                    if (charIndex === 0) { isDeleting = false; wordIndex = (wordIndex + 1) % words.length; setTimeout(type, 300); return; }
                     setTimeout(type, 40);
                 }
             }
             setTimeout(type, 500);
 
-            // ── Custom cursor ─────────────────
+            // ── Custom cursor ──
             const cursor = document.getElementById('customCursor');
             const cursorDot = document.getElementById('customCursorDot');
-            if (cursor && cursorDot && prefersReducedMotion) {
-                cursor.style.display = 'none';
-                cursorDot.style.display = 'none';
-            }
             if (cursor && cursorDot && !prefersReducedMotion) {
-                let mouseX = 0,
-                    mouseY = 0,
-                    cursorX = 0,
-                    cursorY = 0,
-                    dotX = 0,
-                    dotY = 0;
-                document.addEventListener('mousemove', (e) => {
-                    mouseX = e.clientX;
-                    mouseY = e.clientY;
-                }, { passive: true });
-                const hoverTargets = document.querySelectorAll(
-                    'a, button, .btn, .service-card, .project-card, .testimonial-card, .trait-pill, .process-card, .compare-card, .magnetic, .editor, .about-card, .contact-info-item'
-                    );
-                hoverTargets.forEach(el => {
-                    el.addEventListener('mouseenter', () => {
-                        cursor.classList.add('hovering');
-                        cursorDot.classList.add('hovering');
-                    });
-                    el.addEventListener('mouseleave', () => {
-                        cursor.classList.remove('hovering');
-                        cursorDot.classList.remove('hovering');
-                    });
+                let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0, dotX = 0, dotY = 0;
+                document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; }, { passive: true });
+                document.querySelectorAll('a, button, .btn, .service-card, .project-card, .testimonial-card, .trait-pill, .process-card, .compare-card, .magnetic, .editor, .about-card, .contact-info-item').forEach(el => {
+                    el.addEventListener('mouseenter', () => { cursor.classList.add('hovering'); cursorDot.classList.add('hovering'); });
+                    el.addEventListener('mouseleave', () => { cursor.classList.remove('hovering'); cursorDot.classList.remove('hovering'); });
                 });
-
                 function animateCursor() {
-                    cursorX += (mouseX - cursorX) * 0.2;
-                    cursorY += (mouseY - cursorY) * 0.2;
-                    dotX += (mouseX - dotX) * 0.45;
-                    dotY += (mouseY - dotY) * 0.45;
-                    cursor.style.left = cursorX + 'px';
-                    cursor.style.top = cursorY + 'px';
-                    cursorDot.style.left = dotX + 'px';
-                    cursorDot.style.top = dotY + 'px';
+                    cursorX += (mouseX - cursorX) * 0.2; cursorY += (mouseY - cursorY) * 0.2;
+                    dotX += (mouseX - dotX) * 0.45; dotY += (mouseY - dotY) * 0.45;
+                    cursor.style.left = cursorX + 'px'; cursor.style.top = cursorY + 'px';
+                    cursorDot.style.left = dotX + 'px'; cursorDot.style.top = dotY + 'px';
                     requestAnimationFrame(animateCursor);
                 }
                 requestAnimationFrame(animateCursor);
             }
 
-            // ── Mouse glow ────────────────────
+            // ── Mouse glow ──
             const glow = document.getElementById('mouseGlow');
-            if (glow && prefersReducedMotion) {
-                glow.style.display = 'none';
-            }
             if (glow && !prefersReducedMotion) {
-                let glowX = 0,
-                    glowY = 0,
-                    targetX = 0,
-                    targetY = 0;
-                document.addEventListener('mousemove', (e) => {
-                    targetX = e.clientX;
-                    targetY = e.clientY;
-                }, { passive: true });
-
+                let glowX = 0, glowY = 0, targetX = 0, targetY = 0;
+                document.addEventListener('mousemove', (e) => { targetX = e.clientX; targetY = e.clientY; }, { passive: true });
                 function animateGlow() {
-                    glowX += (targetX - glowX) * 0.08;
-                    glowY += (targetY - glowY) * 0.08;
-                    glow.style.left = glowX + 'px';
-                    glow.style.top = glowY + 'px';
+                    glowX += (targetX - glowX) * 0.08; glowY += (targetY - glowY) * 0.08;
+                    glow.style.left = glowX + 'px'; glow.style.top = glowY + 'px';
                     requestAnimationFrame(animateGlow);
                 }
                 requestAnimationFrame(animateGlow);
             }
 
-            // ── Progress bar ──────────────────
+            // ── Progress bar ──
             const bar = document.getElementById('progress-bar');
             if (bar) {
                 let ticking = false;
@@ -2982,10 +2959,8 @@
                     if (!ticking) {
                         requestAnimationFrame(() => {
                             const scrollTop = window.scrollY;
-                            const docHeight = document.documentElement.scrollHeight - window
-                                .innerHeight;
-                            const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-                            bar.style.width = Math.min(progress, 100) + '%';
+                            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                            bar.style.width = Math.min((docHeight > 0 ? (scrollTop / docHeight) * 100 : 0), 100) + '%';
                             ticking = false;
                         });
                         ticking = true;
@@ -2993,23 +2968,16 @@
                 }, { passive: true });
             }
 
-            // ── Reveal on scroll ──────────────
+            // ── Reveal on scroll ──
             const reveals = document.querySelectorAll('.reveal');
             if ('IntersectionObserver' in window) {
                 const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('revealed');
-                            observer.unobserve(entry.target);
-                        }
-                    });
+                    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('revealed'); observer.unobserve(entry.target); } });
                 }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
                 reveals.forEach(el => observer.observe(el));
-            } else {
-                reveals.forEach(el => el.classList.add('revealed'));
-            }
+            } else reveals.forEach(el => el.classList.add('revealed'));
 
-            // ── Counters animation ────────────
+            // ── Counters animation ──
             const counters = document.querySelectorAll('.counter-number[data-target]');
             if ('IntersectionObserver' in window) {
                 const counterObserver = new IntersectionObserver((entries) => {
@@ -3019,26 +2987,16 @@
                             const target = parseInt(el.getAttribute('data-target'));
                             const duration = 2000;
                             const startTime = performance.now();
-
                             function updateCounter(timestamp) {
                                 const elapsed = timestamp - startTime;
                                 const progress = Math.min(elapsed / duration, 1);
                                 const eased = 1 - Math.pow(1 - progress, 3);
                                 const current = Math.floor(eased * target);
-                                if (target >= 100) {
-                                    el.textContent = current + '+';
-                                } else if (target === 99) {
-                                    el.textContent = current + '%';
-                                } else {
-                                    el.textContent = current;
-                                }
-                                if (progress < 1) {
-                                    requestAnimationFrame(updateCounter);
-                                } else {
-                                    if (target >= 100) el.textContent = target + '+';
-                                    else if (target === 99) el.textContent = target + '%';
-                                    else el.textContent = target;
-                                }
+                                if (target >= 100) el.textContent = current + '+';
+                                else if (target === 99) el.textContent = current + '%';
+                                else el.textContent = current;
+                                if (progress < 1) requestAnimationFrame(updateCounter);
+                                else { if (target >= 100) el.textContent = target + '+'; else if (target === 99) el.textContent = target + '%'; else el.textContent = target; }
                             }
                             requestAnimationFrame(updateCounter);
                             counterObserver.unobserve(el);
@@ -3048,22 +3006,17 @@
                 counters.forEach(el => counterObserver.observe(el));
             }
 
-            // ── Magnetic effect ───────────────
-            const magnetics = document.querySelectorAll('.magnetic');
-            magnetics.forEach(el => {
+            // ── Magnetic effect ──
+            document.querySelectorAll('.magnetic').forEach(el => {
                 el.addEventListener('mousemove', (e) => {
                     const rect = el.getBoundingClientRect();
-                    const x = e.clientX - rect.left - rect.width / 2;
-                    const y = e.clientY - rect.top - rect.height / 2;
-                    el.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+                    el.style.transform = `translate(${(e.clientX - rect.left - rect.width/2)*0.3}px, ${(e.clientY - rect.top - rect.height/2)*0.3}px)`;
                 });
-                el.addEventListener('mouseleave', () => {
-                    el.style.transform = 'translate(0px, 0px)';
-                });
+                el.addEventListener('mouseleave', () => el.style.transform = 'translate(0px, 0px)');
             });
 
-            // ── Button ripple ─────────────────
-            document.addEventListener('click', function (e) {
+            // ── Button ripple ──
+            document.addEventListener('click', function(e) {
                 const btn = e.target.closest('.btn');
                 if (!btn) return;
                 const ripple = document.createElement('span');
@@ -3071,13 +3024,13 @@
                 const rect = btn.getBoundingClientRect();
                 const size = Math.max(rect.width, rect.height);
                 ripple.style.width = ripple.style.height = size + 'px';
-                ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-                ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+                ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+                ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
                 btn.appendChild(ripple);
                 ripple.addEventListener('animationend', () => ripple.remove());
             });
 
-            // ── Particles ─────────────────────
+            // ── Particles ──
             const particlesContainer = document.getElementById('particlesContainer');
             if (particlesContainer && !prefersReducedMotion) {
                 const fragment = document.createDocumentFragment();
@@ -3087,16 +3040,15 @@
                     particle.style.left = Math.random() * 100 + '%';
                     particle.style.animationDelay = Math.random() * 16 + 's';
                     particle.style.animationDuration = (12 + Math.random() * 20) + 's';
-                    particle.style.width = (2 + Math.random() * 3) + 'px';
-                    particle.style.height = particle.style.width;
+                    particle.style.width = particle.style.height = (2 + Math.random() * 3) + 'px';
                     fragment.appendChild(particle);
                 }
                 particlesContainer.appendChild(fragment);
             }
 
-            // ── Smooth scroll ─────────────────
+            // ── Smooth scroll ──
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
+                anchor.addEventListener('click', function(e) {
                     const href = this.getAttribute('href');
                     if (href === '#') return;
                     e.preventDefault();
@@ -3105,86 +3057,49 @@
                 });
             });
 
-            // ── 3D tilt on service cards ──────
-            const cards = prefersReducedMotion ? [] : document.querySelectorAll('.service-card');
-            cards.forEach(card => {
-                card.addEventListener('mousemove', function (e) {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left,
-                        y = e.clientY - rect.top;
-                    const centerX = rect.width / 2,
-                        centerY = rect.height / 2;
-                    const rotateX = ((y - centerY) / centerY) * -8;
-                    const rotateY = ((x - centerX) / centerX) * 8;
-                    card.style.transform =
-                        `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+            // ── 3D tilt on service cards ──
+            if (!prefersReducedMotion) {
+                document.querySelectorAll('.service-card').forEach(card => {
+                    card.addEventListener('mousemove', function(e) {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left, y = e.clientY - rect.top;
+                        const centerX = rect.width/2, centerY = rect.height/2;
+                        const rotateX = ((y - centerY) / centerY) * -8;
+                        const rotateY = ((x - centerX) / centerX) * 8;
+                        card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+                    });
+                    card.addEventListener('mouseleave', function() { card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px)'; });
                 });
-                card.addEventListener('mouseleave', function () {
-                    card.style.transform =
-                        'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px)';
-                });
-            });
+            }
 
-            // ── Hero editor parallax tilt ─────
+            // ── Hero editor parallax tilt ──
             const heroEditor = document.getElementById('heroEditorWrap');
             if (heroEditor) {
                 document.addEventListener('mousemove', (e) => {
                     const rect = heroEditor.getBoundingClientRect();
                     const x = (e.clientX - rect.left) / rect.width - 0.5;
                     const y = (e.clientY - rect.top) / rect.height - 0.5;
-                    heroEditor.style.transform =
-                        `perspective(1000px) rotateY(${x * 4}deg) rotateX(${-y * 4}deg)`;
+                    heroEditor.style.transform = `perspective(1000px) rotateY(${x*4}deg) rotateX(${-y*4}deg)`;
                 }, { passive: true });
-                heroEditor.addEventListener('mouseleave', () => {
-                    heroEditor.style.transform =
-                    'perspective(1000px) rotateY(0deg) rotateX(0deg)';
-                });
+                heroEditor.addEventListener('mouseleave', () => heroEditor.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)');
             }
 
-            // ── CONTACT FORM → WHATSAPP ───────
+            // ── CONTACT FORM → WHATSAPP ──
             const form = document.getElementById('contactForm');
             const formMsg = document.getElementById('formMsg');
-            const WHATSAPP_NUMBER = '2090665351';
-
             if (form) {
-                form.addEventListener('submit', function (e) {
+                form.addEventListener('submit', function(e) {
                     e.preventDefault();
-
                     const name = document.getElementById('cf-name').value.trim();
                     const email = document.getElementById('cf-email').value.trim();
                     const message = document.getElementById('cf-msg').value.trim();
-
-                    if (!name || !email || !message) {
-                        formMsg.textContent = '⚠️ الرجاء ملء جميع الحقول المطلوبة.';
-                        formMsg.className = 'form-submit-msg error';
-                        return;
-                    }
-
-                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                        formMsg.textContent = '⚠️ الرجاء إدخال بريد إلكتروني صحيح.';
-                        formMsg.className = 'form-submit-msg error';
-                        return;
-                    }
-
-                    const whatsappMessage =
-                        `مرحباً أحمد حاتم،%0A%0A` +
-                        `لدي مشروع جديد وأرغب في مناقشته معك:%0A%0A` +
-                        `👤 الاسم: ${encodeURIComponent(name)}%0A` +
-                        `📧 البريد الإلكتروني: ${encodeURIComponent(email)}%0A%0A` +
-                        `📝 تفاصيل المشروع:%0A${encodeURIComponent(message)}%0A%0A` +
-                        `شكراً لك، أنتظر ردك.`;
-
+                    if (!name || !email || !message) { formMsg.textContent = '⚠️ الرجاء ملء جميع الحقول المطلوبة.'; formMsg.className = 'form-submit-msg error'; return; }
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { formMsg.textContent = '⚠️ الرجاء إدخال بريد إلكتروني صحيح.'; formMsg.className = 'form-submit-msg error'; return; }
+                    const whatsappMessage = `مرحباً أحمد حاتم،%0A%0Aلدي مشروع جديد وأرغب في مناقشته معك:%0A%0A👤 الاسم: ${encodeURIComponent(name)}%0A📧 البريد الإلكتروني: ${encodeURIComponent(email)}%0A%0A📝 تفاصيل المشروع:%0A${encodeURIComponent(message)}%0A%0Aشكراً لك، أنتظر ردك.`;
                     formMsg.textContent = '✓ جاري فتح واتساب...';
                     formMsg.className = 'form-submit-msg';
-
-                    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`,
-                    '_blank', 'noopener,noreferrer');
-
-                    setTimeout(() => {
-                        formMsg.textContent = '✓ تم الفتح في واتساب. إذا لم يفتح، اضغط على الرابط في الأعلى.';
-                        formMsg.className = 'form-submit-msg';
-                    }, 1200);
-
+                    window.open(`https://wa.me/2090665351?text=${whatsappMessage}`, '_blank', 'noopener,noreferrer');
+                    setTimeout(() => { formMsg.textContent = '✓ تم الفتح في واتساب. إذا لم يفتح، اضغط على الرابط في الأعلى.'; }, 1200);
                     form.reset();
                 });
             }
